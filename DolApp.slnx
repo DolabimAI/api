@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/DolApp.Api/DolApp.Api.csproj" />
+    <Project Path="src/DolApp.Application/DolApp.Application.csproj" />
+    <Project Path="src/DolApp.Core/DolApp.Core.csproj" />
+    <Project Path="src/DolApp.Infrastructure/DolApp.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/DolApp.Tests/DolApp.Tests.csproj" />
+  </Folder>
+</Solution>

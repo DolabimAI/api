@@ -27,11 +27,7 @@ Her dosya tek işlemdir: bir satır bile hatalıysa hiçbir şey yazılmaz. Seed
 1. Yeni bir dosya eklenir: `005_<kısa_ad>.sql`. Eski dosyalar değiştirilmez.
 2. Entity'ler yeniden üretilir:
 
-```bash
-dotnet ef dbcontext scaffold "Name=ConnectionStrings:Db" Npgsql.EntityFrameworkCore.PostgreSQL \
-  --schema public --context AppDbContext --context-dir Data --output-dir Data/Entities \
-  --no-onconfiguring --force
-```
+`dotnet ef dbcontext scaffold "Name=ConnectionStrings:Db" Npgsql.EntityFrameworkCore.PostgreSQL --project src/DolApp.Infrastructure --startup-project src/DolApp.Api --schema public --context AppDbContext --context-dir Data --context-namespace DolApp.Infrastructure.Data --output-dir ../DolApp.Core/Entities --namespace DolApp.Core.Entities --no-onconfiguring --force`
 
 `--schema public` şart; yoksa Supabase'in `auth` ve `storage` tabloları da gelir. Üretilen dosyalar elle düzenlenmez. Ek kod `partial class` ile ayrı dosyaya yazılır.
 

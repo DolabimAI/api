@@ -1,23 +1,26 @@
+using DolApp.Application;
+using DolApp.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// ---- Servisler ----
 builder.Services.AddControllers();
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
+builder.Services.AddApplication(builder.Configuration["MediatR:LicenseKey"]);
+builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// ---- İstek hattı (her istek bu sırayla geçer) ----
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();

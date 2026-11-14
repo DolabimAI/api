@@ -33,10 +33,14 @@ public static class DependencyInjection
             httpClient.Timeout = TimeSpan.FromSeconds(15);
         });
 
+        // Bellek önbelleği: liste tabloları (lookups) burada tutulur. Tek örnek, bütün isteklerle paylaşılır.
+        services.AddMemoryCache();
+
         // ---- Repository'ler ----
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddSingleton<IDateTimeProvider, IstanbulDateTimeProvider>();  // saat sağlayıcı tek örnek: sistem saatini Europe/Istanbul'a çevirir.
         services.AddScoped<ILocationRepository, LocationRepository>();
+        services.AddScoped<ILookupRepository, LookupRepository>();
 
         return services;
     }

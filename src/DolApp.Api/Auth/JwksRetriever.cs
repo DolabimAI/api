@@ -16,15 +16,15 @@ public class JwksRetriever : IConfigurationRetriever<OpenIdConnectConfiguration>
     public JwksRetriever(string issuer) => _issuer = issuer;
 
     public async Task<OpenIdConnectConfiguration> GetConfigurationAsync(
-        string address, IDocumentRetriever retriever, CancellationToken cancel)
+        string jwksAddress, IDocumentRetriever documentRetriever, CancellationToken cancellationToken)
     {
-        var json = await retriever.GetDocumentAsync(address, cancel);
-        var keySet = new JsonWebKeySet(json);
+        var jwksJson = await documentRetriever.GetDocumentAsync(jwksAddress, cancellationToken);
+        var jsonWebKeySet = new JsonWebKeySet(jwksJson);
 
-        var config = new OpenIdConnectConfiguration { Issuer = _issuer };
-        foreach (var key in keySet.GetSigningKeys())
-            config.SigningKeys.Add(key);
+        var openIdConfiguration = new OpenIdConnectConfiguration { Issuer = _issuer };
+        foreach (var signingKey in jsonWebKeySet.GetSigningKeys())
+            openIdConfiguration.SigningKeys.Add(signingKey);
 
-        return config;
+        return openIdConfiguration;
     }
 }

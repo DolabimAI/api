@@ -8,50 +8,51 @@ namespace DolApp.Api.Middleware;
 
 public class ExceptionHandlingMiddleware
 {
-    private readonly RequestDelegate _next;
+    private readonly RequestDelegate _nextMiddleware;
     private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 
-    public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
+    public ExceptionHandlingMiddleware(RequestDelegate nextMiddleware, ILogger<ExceptionHandlingMiddleware> logger)
     {
-        _next = next;
+        _nextMiddleware = nextMiddleware;
         _logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext context)
+    public async Task InvokeAsync(HttpContext httpContext)
     {
         try
         {
-            await _next(context);   // isteği normal yoluna gönder
+            await _nextMiddleware(httpContext);   // isteği normal yoluna gönder
         }
-        catch (AppException ex)
+        catch (AppException appException)
         {
             // Beklenen hata: kodu ve durumu fırlatan belirledi.
-            await WriteAsync(context, ex.StatusCode, ex.Code, ex.Message);
+            await WriteErrorAsync(httpContext, appException.StatusCode, appException.Code, appException.Message);
         }
-        catch (ValidationException ex)
+        catch (ValidationException validationException)
         {
             // Validator hatası: ilk hatayı döneriz.
             // Validator'da WithErrorCode(...) yazılmadıysa FluentValidation kendi adını koyar
             // ("NotEmptyValidator" gibi); o durumda genel kodu kullanırız.
-            var first = ex.Errors.FirstOrDefault();
-            var code = first is not null && !first.ErrorCode.EndsWith("Validator")
-                ? first.ErrorCode
+            var firstError = validationException.Errors.FirstOrDefault();
+            var errorCode = firstError is not null && !firstError.ErrorCode.EndsWith("Validator")
+                ? firstError.ErrorCode
                 : ErrorCodes.InvalidRequest;
-            var message = first?.ErrorMessage ?? ErrorMessages.InvalidRequest;
-            await WriteAsync(context, StatusCodes.Status400BadRequest, code, message);
+            var errorMessage = firstError?.ErrorMessage ?? ErrorMessages.InvalidRequest;
+            await WriteErrorAsync(httpContext, StatusCodes.Status400BadRequest, errorCode, errorMessage);
         }
-        catch (Exception ex)
+        catch (Exception exception)
         {
             // Beklenmeyen hata: ayrıntı yalnızca loga yazılır, kullanıcıya genel mesaj gider.
-            _logger.LogError(ex, "Beklenmeyen hata: {Method} {Path}", context.Request.Method, context.Request.Path);
-            await WriteAsync(context, StatusCodes.Status500InternalServerError,
+            _logger.LogError(exception, "Beklenmeyen hata: {Method} {Path}",
+                httpContext.Request.Method, httpContext.Request.Path);
+            await WriteErrorAsync(httpContext, StatusCodes.Status500InternalServerError,
                 ErrorCodes.InternalError, ErrorMessages.InternalError);
         }
     }
 
-    private static Task WriteAsync(HttpContext context, int statusCode, string code, string message)
+    private static Task WriteErrorAsync(HttpContext httpContext, int statusCode, string errorCode, string errorMessage)
     {
-        context.Response.StatusCode = statusCode;
-        return context.Response.WriteAsJsonAsync(new ErrorResponse(code, message));
+        httpContext.Response.StatusCode = statusCode;
+        return httpContext.Response.WriteAsJsonAsync(new ErrorResponse(errorCode, errorMessage));
     }
 }

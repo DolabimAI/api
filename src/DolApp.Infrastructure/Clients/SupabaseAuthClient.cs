@@ -50,7 +50,7 @@ public class SupabaseAuthClient : IAuthService
 
         // Beklenmeyen hata: middleware 500'e çevirir, ayrıntı yalnızca loga gider.
         throw new InvalidOperationException(
-            $"Supabase hesap açma hatası: {(int)response.StatusCode} {supabaseError.RawBody}");
+            $"Supabase hesap açma hatası: {(int)response.StatusCode} {response.RequestMessage?.RequestUri} {supabaseError.RawBody}");
     }
 
     public async Task DeleteUserAsync(Guid userId, CancellationToken cancellationToken)

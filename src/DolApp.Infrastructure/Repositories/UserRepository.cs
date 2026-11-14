@@ -47,4 +47,15 @@ public class UserRepository : IUserRepository
             .Include(user => user.DefaultDistrict)
             .FirstOrDefaultAsync(user => user.Id == userId && !user.IsDeleted, cancellationToken);
     }
+
+    public async Task<User?> GetActiveForUpdateAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users
+            .FirstOrDefaultAsync(user => user.Id == userId && !user.IsDeleted, cancellationToken);
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

@@ -18,4 +18,10 @@ public interface IUserRepository
     /// Silinmemiş kullanıcıyı Şehrim'in il ve ilçe bilgisiyle birlikte getirir; yoksa null döner.
     Task<User?> GetActiveWithDefaultLocationAsync(Guid userId, CancellationToken cancellationToken);
 
+    /// Güncellenecek kullanıcıyı getirir. EF bu nesneyi takip eder; değişiklikler SaveChangesAsync ile yazılır.
+    Task<User?> GetActiveForUpdateAsync(Guid userId, CancellationToken cancellationToken);
+
+    /// Takip edilen nesnelerdeki değişiklikleri veritabanına tek işlemde yazar.
+    Task SaveChangesAsync(CancellationToken cancellationToken);
+
 }

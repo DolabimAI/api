@@ -10,6 +10,7 @@ public static class ErrorMessages
     public const string InvalidRequest = "İsteğin işlenemedi. Lütfen tekrar dene.";
     public const string InternalError = "Beklenmeyen bir sorun oluştu. Biraz sonra tekrar dener misin?";
     public const string Unauthorized = "Oturumunun süresi doldu. Lütfen tekrar giriş yap.";
+    public const string InvalidId = "Seçtiğin değer listede bulunamadı. Lütfen listeden yeniden seç.";
 
     // Hesap
     public const string EmailTaken = "Bu e-posta adresiyle açılmış bir hesap zaten var. Giriş yapmayı deneyebilirsin.";
@@ -19,4 +20,8 @@ public static class ErrorMessages
     public const string InvalidEmail = "Lütfen geçerli bir e-posta adresi gir.";
     public const string Under18 = "DolabımAI'yi kullanabilmek için 18 yaşında ya da daha büyük olman gerekiyor.";
     public const string ConsentRequired = "Kayıt olabilmek için onam metnini okuyup onaylaman gerekiyor.";
+
+    // Şehrim
+    public const string CityRequired = "İlçe seçebilmek için önce il seçmen gerekiyor.";
+    public const string DistrictNotInCity = "Seçtiğin ilçe bu ile ait değil. Lütfen ilçeyi yeniden seç.";
 }

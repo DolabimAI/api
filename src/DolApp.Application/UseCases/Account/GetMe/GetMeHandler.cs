@@ -26,15 +26,6 @@ public class GetMeHandler : IRequestHandler<GetMeRequest, GetMeResponse>
         if (activeUser is null)
             throw new AppException(401, ErrorCodes.Unauthorized, ErrorMessages.Unauthorized);
 
-        return new GetMeResponse
-        {
-            FirstName = activeUser.FirstName ?? string.Empty,
-            LastName = activeUser.LastName ?? string.Empty,
-            Email = activeUser.Email ?? string.Empty,
-            BirthDate = activeUser.BirthDate,
-            IsOnboardingAccepted = activeUser.IsOnboardingAccepted,
-            DefaultCity = activeUser.DefaultCity is null ? null : new MeLocationResponse { Id = activeUser.DefaultCity.Id, Name = activeUser.DefaultCity.DisplayName },
-            DefaultDistrict = activeUser.DefaultDistrict is null ? null : new MeLocationResponse { Id = activeUser.DefaultDistrict.Id, Name = activeUser.DefaultDistrict.DisplayName },
-        };
+        return GetMeResponse.FromUser(activeUser);
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DolApp.Application.UseCases.Account.GetMe;
+using DolApp.Application.UseCases.Account.UpdateMe;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,5 +24,13 @@ public class MeController : ControllerBase
     {
         var getMeResponse = await _mediator.Send(new GetMeRequest(), cancellationToken);
         return Ok(getMeResponse);
+    }
+
+    [HttpPatch]
+    public async Task<ActionResult<GetMeResponse>> UpdateMe(
+    UpdateMeRequest request, CancellationToken cancellationToken)
+    {
+        var updateMeResponse = await _mediator.Send(request, cancellationToken);
+        return Ok(updateMeResponse);
     }
 }

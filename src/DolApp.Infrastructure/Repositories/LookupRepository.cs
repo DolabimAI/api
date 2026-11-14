@@ -71,6 +71,19 @@ public class LookupRepository : ILookupRepository
             () => _dbContext.TimesOfDays.AsNoTracking().OrderBy(timeOfDay => timeOfDay.Id).ToListAsync(cancellationToken));
     }
 
+    public Task<List<TemplateRequirement>> GetTemplateRequirementsAsync(CancellationToken cancellationToken)
+    {
+        return GetFromCacheOrDatabaseAsync("lookups:template_requirements",
+            () => _dbContext.TemplateRequirements
+                .AsNoTracking()
+                .Include(templateRequirement => templateRequirement.Template)
+                .Include(templateRequirement => templateRequirement.Category)
+                .OrderBy(templateRequirement => templateRequirement.Id)
+                .ToListAsync(cancellationToken));
+    }
+
+
+
     /// Liste bellekte varsa oradan döner; yoksa veritabanından okur, belleğe koyar ve döner.
     private async Task<List<TEntity>> GetFromCacheOrDatabaseAsync<TEntity>(
         string cacheKey, Func<Task<List<TEntity>>> loadFromDatabase)

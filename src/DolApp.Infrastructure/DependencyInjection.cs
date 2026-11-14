@@ -41,6 +41,7 @@ public static class DependencyInjection
         services.AddSingleton<IDateTimeProvider, IstanbulDateTimeProvider>();  // saat sağlayıcı tek örnek: sistem saatini Europe/Istanbul'a çevirir.
         services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<ILookupRepository, LookupRepository>();
+        services.AddScoped<IWardrobeRepository, WardrobeRepository>();
 
         return services;
     }

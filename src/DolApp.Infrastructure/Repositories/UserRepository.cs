@@ -31,4 +31,11 @@ public class UserRepository : IUserRepository
         // Tek SaveChanges = tek veritabanı işlemi: iki satır birlikte yazılır ya da hiçbiri yazılmaz.
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
+
+    public async Task<User?> GetActiveByIdAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(user => user.Id == userId && !user.IsDeleted, cancellationToken);
+    }
 }

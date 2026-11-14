@@ -80,3 +80,24 @@ Komutlar deponun kök klasöründe, PowerShell'de çalıştırılır.
 ## Telefondan erişim
 
 Aynı Wi-Fi'daki telefondan bağlanma ayarları (T-43) C2/C4 sırasında bu bölüme eklenecek.
+
+
+## Telefondan bağlanma (T-43)
+
+Telefondaki uygulama, bilgisayarda çalışan API'ye yerel ağ üzerinden bağlanır. Telefon ve bilgisayar aynı Wi-Fi'da olmalı.
+
+1. Bilgisayarın IP adresi: `ipconfig` → "Wireless LAN adapter Wi-Fi" (Türkçe: "Kablosuz LAN bağdaştırıcısı Wi-Fi") → **IPv4 Address** (örn. `192.168.1.13`). Adres ağ değişince değişir.
+2. Ağ profili **Özel** olmalı: `Get-NetConnectionProfile` → `NetworkCategory: Private`.
+   Değilse: Ayarlar → Ağ ve İnternet → Wi-Fi → ağın adı → Ağ profili türü → Özel ağ.
+3. Güvenlik duvarı izni (bir kez). Başlat'ta `powershell` yaz → sağ tık → **Yönetici olarak çalıştır** (komut satırı `C:\WINDOWS\system32` olmalı):
+   `New-NetFirewallRule -DisplayName "DolApp API 5076" -Direction Inbound -Protocol TCP -LocalPort 5076 -Action Allow -Profile Private`
+4. API'yi ağa açık çalıştır:
+   `dotnet run --project src/DolApp.Api --urls http://0.0.0.0:5076`
+   Bu komutla `http://localhost:5076` de çalışmaya devam eder.
+5. Telefonun tarayıcısında `http://<IP>:5076/api/lookups` → `{"code":"unauthorized",...}` görünüyorsa bağlantı tamam.
+
+Uygulamadaki API adresi `http://<IP>:5076` olur. IP ağ değiştikçe değiştiği için adres kodda sabit yazılmamalı, ayardan okunmalı.
+
+Kampüs ya da misafir ağları cihazların birbirini görmesini engelleyebilir. Bu durumda telefonun erişim noktası açılır, bilgisayar ona bağlanır ve 1. adımdaki IP yeniden alınır.
+
+Telefon gerekmiyorsa `--urls` olmadan çalıştırılır; API yalnızca `localhost`'ta açık kalır.

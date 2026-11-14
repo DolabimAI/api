@@ -38,4 +38,13 @@ public class UserRepository : IUserRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(user => user.Id == userId && !user.IsDeleted, cancellationToken);
     }
+
+    public async Task<User?> GetActiveWithDefaultLocationAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Users
+            .AsNoTracking()
+            .Include(user => user.DefaultCity)
+            .Include(user => user.DefaultDistrict)
+            .FirstOrDefaultAsync(user => user.Id == userId && !user.IsDeleted, cancellationToken);
+    }
 }

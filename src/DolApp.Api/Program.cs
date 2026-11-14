@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Protocols;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,7 +24,22 @@ builder.Services.AddControllers()
             new BadRequestObjectResult(new ErrorResponse(ErrorCodes.InvalidRequest, ErrorMessages.InvalidRequest));
     });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
+// Swagger'da "Authorize" düğmesi: token bir kez girilir, sonraki her isteğe Bearer başlığı olarak eklenir.
+builder.Services.AddSwaggerGen(swaggerGenOptions =>
+{
+    swaggerGenOptions.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        Description = "Kayıt ya da giriş cevabındaki accessToken'ı yapıştır. Başına \"Bearer\" yazma, Swagger ekliyor.",
+    });
+    swaggerGenOptions.AddSecurityRequirement(openApiDocument => new OpenApiSecurityRequirement
+    {
+        [new OpenApiSecuritySchemeReference("Bearer", openApiDocument)] = [],
+    });
+});
 
 builder.Services.AddApplication(builder.Configuration["MediatR:LicenseKey"]);
 builder.Services.AddInfrastructure(builder.Configuration);

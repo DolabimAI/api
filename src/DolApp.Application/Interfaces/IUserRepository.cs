@@ -15,4 +15,7 @@ public interface IUserRepository
     /// Silinmemiş kullanıcıyı getirir; yoksa ya da silinmişse null döner.
     Task<User?> GetActiveByIdAsync(Guid userId, CancellationToken cancellationToken);
 
+    /// Silinmemiş kullanıcıyı Şehrim'in il ve ilçe bilgisiyle birlikte getirir; yoksa null döner.
+    Task<User?> GetActiveWithDefaultLocationAsync(Guid userId, CancellationToken cancellationToken);
+
 }

@@ -2,11 +2,15 @@
 
 public static class ErrorCodes
 {
-    // Genel: middleware kullanır
     public const string InvalidRequest = "invalid_request";
     public const string InternalError = "internal_error";
     public const string Unauthorized = "unauthorized";
+
+    // Hesap oluşumu için gerekli olan hata kodları
+    public const string EmailTaken = "email_taken";
+    public const string InvalidCredentials = "invalid_credentials";
+    public const string WeakPassword = "weak_password";
 }
 
-/// API'nin dönebileceği hata kodları. Uygulama (Bilge, Sude) bu metinlere göre karar verir;
-/// değerler API Uçları belgesiyle birebir aynı olmalı. Yeni kod, onu kullanan uç yazılırken eklenir
+// Genel: middleware metodu kullanılır
+

@@ -6,6 +6,11 @@ public static class ErrorMessages
     public const string InvalidRequest = "İstek biçimi hatalı.";
     public const string InternalError = "Beklenmeyen bir hata oluştu, biraz sonra tekrar dene.";
     public const string Unauthorized = "Oturumun sona erdi, tekrar giriş yap.";
+
+    // Hesap
+    public const string EmailTaken = "Bu e-posta ile kayıtlı bir hesap var.";
+    public const string InvalidCredentials = "E-posta ya da şifre hatalı.";
+    public const string WeakPassword = "Şifre yeterince güçlü değil, daha uzun bir şifre seç.";
 }
 
 /// Hata kodlarına karşılık gelen, ekranda gösterilecek Türkçe mesajlar.

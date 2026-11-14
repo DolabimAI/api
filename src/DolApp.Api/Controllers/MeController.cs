@@ -1,4 +1,5 @@
-﻿using DolApp.Application.UseCases.Account.GetMe;
+﻿using DolApp.Application.UseCases.Account.AcceptOnboarding;
+using DolApp.Application.UseCases.Account.GetMe;
 using DolApp.Application.UseCases.Account.UpdateMe;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -32,5 +33,12 @@ public class MeController : ControllerBase
     {
         var updateMeResponse = await _mediator.Send(request, cancellationToken);
         return Ok(updateMeResponse);
+    }
+
+    [HttpPost("onboarding")]
+    public async Task<IActionResult> AcceptOnboarding(CancellationToken cancellationToken)
+    {
+        await _mediator.Send(new AcceptOnboardingRequest(), cancellationToken);
+        return NoContent();
     }
 }

@@ -33,6 +33,17 @@ public static class DependencyInjection
             httpClient.Timeout = TimeSpan.FromSeconds(15);
         });
 
+        // Open-Meteo: anahtar gerekmez. Zaman aşımı 10 sn; aşılırsa kullanıcıya 502 weather_unavailable döner.
+        var openMeteoOptions = new OpenMeteoOptions
+        {
+            BaseUrl = Required(configuration, "OpenMeteo:BaseUrl"),
+        };
+        services.AddSingleton(openMeteoOptions);
+        services.AddHttpClient<IWeatherService, OpenMeteoWeatherService>(httpClient =>
+        {
+            httpClient.Timeout = TimeSpan.FromSeconds(10);
+        });
+
         // Bellek önbelleği: liste tabloları (lookups) burada tutulur. Tek örnek, bütün isteklerle paylaşılır.
         services.AddMemoryCache();
 

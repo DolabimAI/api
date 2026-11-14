@@ -17,4 +17,8 @@ public interface ILocationRepository
 
     /// Koordinata en yakın ilçeyi ili ile birlikte getirir.
     Task<District?> GetNearestDistrictAsync(decimal latitude, decimal longitude, CancellationToken cancellationToken);
+
+    Task<City?> GetCityByIdAsync(long cityId, CancellationToken cancellationToken);
+
+    Task<District?> GetDistrictByIdAsync(long districtId, CancellationToken cancellationToken);
 }

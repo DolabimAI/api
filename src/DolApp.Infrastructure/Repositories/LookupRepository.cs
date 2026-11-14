@@ -82,6 +82,12 @@ public class LookupRepository : ILookupRepository
                 .ToListAsync(cancellationToken));
     }
 
+    public Task<List<WeatherCondition>> GetWeatherConditionsAsync(CancellationToken cancellationToken)
+    {
+        return GetFromCacheOrDatabaseAsync("lookups:weather_conditions",
+            () => _dbContext.WeatherConditions.AsNoTracking().OrderBy(weatherCondition => weatherCondition.Id).ToListAsync(cancellationToken));
+    }
+
 
 
     /// Liste bellekte varsa oradan döner; yoksa veritabanından okur, belleğe koyar ve döner.

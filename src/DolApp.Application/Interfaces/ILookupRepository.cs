@@ -15,5 +15,8 @@ public interface ILookupRepository
     Task<List<Season>> GetSeasonsAsync(CancellationToken cancellationToken);
     Task<List<Thickness>> GetThicknessesAsync(CancellationToken cancellationToken);
     Task<List<TimesOfDay>> GetTimesOfDayAsync(CancellationToken cancellationToken);
-    Task<List<TemplateRequirement>> GetTemplateRequirementsAsync(CancellationToken cancellationToken);     /// Dolap şablonlarının gereksinimleri; şablon ve kategori bilgisiyle birlikte, id sırasıyla.
+    Task<List<TemplateRequirement>> GetTemplateRequirementsAsync(CancellationToken cancellationToken);     /// Dolap şablonlarının gereksinimleri; şablon ve kategori bilgisiyle birlikte, id sırasıyla.                                                                                                      
+    Task<List<WeatherCondition>> GetWeatherConditionsAsync(CancellationToken cancellationToken); /// Hava durumu türleri ve her birinin Open-Meteo (WMO) kodları.
 }
+
+

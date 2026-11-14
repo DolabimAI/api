@@ -28,4 +28,9 @@ public static class ErrorMessages
 
     // Konum
     public const string LocationOutOfRange = "Konumun Türkiye dışında görünüyor. Lütfen il ve ilçeyi listeden seç.";
+
+    // Hava durumu
+    public const string DateOutOfRange = "Hava durumunu yalnızca bugün ve sonraki 6 gün için görebilirsin.";
+    public const string TimePassed = "Bu vakit bugün için geçti. Lütfen daha sonraki bir vakit seç.";
+    public const string WeatherUnavailable = "Hava durumu şu an alınamadı. Biraz sonra tekrar dener misin?";
 }

@@ -40,6 +40,18 @@ public class LocationRepository : ILocationRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<City?> GetCityByIdAsync(long cityId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Cities.AsNoTracking()
+            .FirstOrDefaultAsync(city => city.Id == cityId, cancellationToken);
+    }
+
+    public async Task<District?> GetDistrictByIdAsync(long districtId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Districts.AsNoTracking()
+            .FirstOrDefaultAsync(district => district.Id == districtId, cancellationToken);
+    }
+
     public async Task<District?> GetNearestDistrictAsync(decimal latitude, decimal longitude, CancellationToken cancellationToken)
     {
         // Türkiye'nin enleminde 1° boylam, 1° enlemin yaklaşık %75'i kadardır; boylam farkı bu oranla küçültülür.

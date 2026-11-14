@@ -25,6 +25,11 @@ public static class ErrorCodes
 
     // Konum
     public const string LocationOutOfRange = "location_out_of_range";
+
+    // Hava durumu
+    public const string DateOutOfRange = "date_out_of_range";
+    public const string TimePassed = "time_passed";
+    public const string WeatherUnavailable = "weather_unavailable";
 }
 
 

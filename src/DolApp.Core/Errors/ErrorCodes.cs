@@ -22,6 +22,9 @@ public static class ErrorCodes
     // Şehrim
     public const string CityRequired = "city_required";
     public const string DistrictNotInCity = "district_not_in_city";
+
+    // Konum
+    public const string LocationOutOfRange = "location_out_of_range";
 }
 
 

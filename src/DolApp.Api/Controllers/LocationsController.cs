@@ -1,5 +1,6 @@
 using DolApp.Application.UseCases.Locations.GetCities;
 using DolApp.Application.UseCases.Locations.GetDistricts;
+using DolApp.Application.UseCases.Locations.GetNearestLocation;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,5 +32,17 @@ public class LocationsController : ControllerBase
     {
         var getDistrictsResponse = await _mediator.Send(new GetDistrictsRequest { CityId = cityId }, cancellationToken);
         return Ok(getDistrictsResponse.Districts);
+    }
+
+    /// Sorgu parametre adları API belgesindeki gibi kısa (lat, lon); kodda açık adlarla (latitude, longitude) kullanılır.
+    [HttpGet("api/locations/nearest")]
+    public async Task<ActionResult<GetNearestLocationResponse>> GetNearestLocation(
+        [FromQuery(Name = "lat")] decimal? latitude,
+        [FromQuery(Name = "lon")] decimal? longitude,
+        CancellationToken cancellationToken)
+    {
+        var getNearestLocationRequest = new GetNearestLocationRequest { Latitude = latitude, Longitude = longitude };
+        var getNearestLocationResponse = await _mediator.Send(getNearestLocationRequest, cancellationToken);
+        return Ok(getNearestLocationResponse);
     }
 }

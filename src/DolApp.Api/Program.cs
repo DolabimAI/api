@@ -1,6 +1,7 @@
 using DolApp.Api.Auth;
 using DolApp.Api.Middleware;
 using DolApp.Application;
+using DolApp.Application.Interfaces;
 using DolApp.Core.Errors;
 using DolApp.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -13,11 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 
 // ---- Servisler ----
 builder.Services.AddControllers()
-    .ConfigureApiBehaviorOptions(options =>
+    .ConfigureApiBehaviorOptions(apiBehaviorOptions =>
     {
         // Gövde okunamadığında (bozuk JSON, "sayı" alanına metin gibi) ASP.NET kendi biçiminde
         // cevap verir. Bunu da bizim { code, message } biçimimize çeviriyoruz.
-        options.InvalidModelStateResponseFactory = _ =>
+        // "_" : bu parametreyi kullanmadığımızı belirtir.
+        apiBehaviorOptions.InvalidModelStateResponseFactory = _ =>
             new BadRequestObjectResult(new ErrorResponse(ErrorCodes.InvalidRequest, ErrorMessages.InvalidRequest));
     });
 builder.Services.AddEndpointsApiExplorer();
@@ -25,6 +27,10 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddApplication(builder.Configuration["MediatR:LicenseKey"]);
 builder.Services.AddInfrastructure(builder.Configuration);
+
+// Bu isteği yapan kullanıcı (token'daki "sub")
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 // ---- Kimlik doğrulama: Supabase token'ı ----
 var supabaseUrl = builder.Configuration["Supabase:Url"]?.TrimEnd('/');
@@ -35,18 +41,18 @@ var issuer = $"{supabaseUrl}/auth/v1";
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+    .AddJwtBearer(jwtBearerOptions =>
     {
         // Token içindeki alan adlarını (ör. "sub" = kullanıcı id'si) olduğu gibi bırak.
-        options.MapInboundClaims = false;
+        jwtBearerOptions.MapInboundClaims = false;
 
         // Açık anahtarları Supabase'in JWKS adresinden al; .NET bellekte tutar ve gerektiğinde yeniler.
-        options.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
+        jwtBearerOptions.ConfigurationManager = new ConfigurationManager<OpenIdConnectConfiguration>(
             $"{issuer}/.well-known/jwks.json",
             new JwksRetriever(issuer),
             new HttpDocumentRetriever { RequireHttps = true });
 
-        options.TokenValidationParameters = new TokenValidationParameters
+        jwtBearerOptions.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuer = true,
             ValidIssuer = issuer,              // token'ı bizim Supabase projemiz mi verdi?
@@ -56,14 +62,28 @@ builder.Services
             ClockSkew = TimeSpan.FromSeconds(30),
         };
 
-        // Token yok ya da geçersizse cevabı bizim { code, message } biçimimizde ver.
-        options.Events = new JwtBearerEvents
+        jwtBearerOptions.Events = new JwtBearerEvents
         {
-            OnChallenge = async context =>
+            // Token geçerli; ama hesap users tablosunda var ve silinmemiş mi? (silinmiş hesabın isteği reddedilir)
+            OnTokenValidated = async tokenValidatedContext =>
             {
-                context.HandleResponse();
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsJsonAsync(
+                var userIdText = tokenValidatedContext.Principal?.FindFirst("sub")?.Value;
+                var userRepository = tokenValidatedContext.HttpContext.RequestServices
+                    .GetRequiredService<IUserRepository>();
+
+                var isActiveUser = Guid.TryParse(userIdText, out var userId)
+                    && await userRepository.IsActiveAsync(userId, tokenValidatedContext.HttpContext.RequestAborted);
+
+                if (!isActiveUser)
+                    tokenValidatedContext.Fail("Hesap bulunamadı ya da silinmiş.");
+            },
+
+            // Token yok, geçersiz ya da hesap silinmişse cevabı bizim { code, message } biçimimizde ver.
+            OnChallenge = async challengeContext =>
+            {
+                challengeContext.HandleResponse();
+                challengeContext.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                await challengeContext.Response.WriteAsJsonAsync(
                     new ErrorResponse(ErrorCodes.Unauthorized, ErrorMessages.Unauthorized));
             }
         };

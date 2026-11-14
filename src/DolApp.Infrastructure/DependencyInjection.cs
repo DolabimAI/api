@@ -4,6 +4,7 @@ using DolApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using DolApp.Infrastructure.Repositories;
 
 namespace DolApp.Infrastructure;
 
@@ -30,6 +31,9 @@ public static class DependencyInjection
             httpClient.BaseAddress = new Uri(supabaseOptions.Url + "/");
             httpClient.Timeout = TimeSpan.FromSeconds(15);
         });
+
+        // ---- Repository'ler ----
+        services.AddScoped<IUserRepository, UserRepository>();
 
         return services;
     }

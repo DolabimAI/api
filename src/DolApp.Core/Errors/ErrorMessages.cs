@@ -11,6 +11,7 @@ public static class ErrorMessages
     public const string InternalError = "Beklenmeyen bir sorun oluştu. Biraz sonra tekrar dener misin?";
     public const string Unauthorized = "Oturumunun süresi doldu. Lütfen tekrar giriş yap.";
     public const string InvalidId = "Seçtiğin değer listede bulunamadı. Lütfen listeden yeniden seç.";
+    public const string NotFound = "Aradığın kayıt bulunamadı.";
 
     // Hesap
     public const string EmailTaken = "Bu e-posta adresiyle açılmış bir hesap zaten var. Giriş yapmayı deneyebilirsin.";

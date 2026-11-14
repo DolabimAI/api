@@ -7,6 +7,7 @@ public static class ErrorCodes
     public const string InternalError = "internal_error";
     public const string Unauthorized = "unauthorized";
     public const string InvalidId = "invalid_id";
+    public const string NotFound = "not_found";
 
 
     // Hesap oluşumu için gerekli olan hata kodları

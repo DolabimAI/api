@@ -1,4 +1,5 @@
 using DolApp.Application.Interfaces;
+using DolApp.Core.Entities;
 using DolApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,5 +21,14 @@ public class UserRepository : IUserRepository
         return _dbContext.Users.AnyAsync(
             user => user.Id == userId && !user.IsDeleted,
             cancellationToken);
+    }
+
+    public async Task AddWithWardrobeAsync(User user, CancellationToken cancellationToken)
+    {
+        _dbContext.Users.Add(user);
+        _dbContext.Wardrobes.Add(new Wardrobe { UserId = user.Id });
+
+        // Tek SaveChanges = tek veritabanı işlemi: iki satır birlikte yazılır ya da hiçbiri yazılmaz.
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

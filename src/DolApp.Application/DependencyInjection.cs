@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using DolApp.Application.Behaviors;
 
 namespace DolApp.Application;
 
@@ -16,6 +17,9 @@ public static class DependencyInjection
         {
             // Bu projedeki bütün IRequestHandler sınıflarını otomatik bulur ve kaydeder.
             mediatRConfiguration.RegisterServicesFromAssembly(applicationAssembly);
+
+            // Her istekte handler'dan önce validator'ları çalıştır.
+            mediatRConfiguration.AddOpenBehavior(typeof(ValidationBehavior<,>));
 
             // Lisans anahtarı varsa ver; yoksa MediatR yine çalışır, yalnızca logda uyarı yazar.
             if (!string.IsNullOrWhiteSpace(mediatRLicenseKey))

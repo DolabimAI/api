@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using DolApp.Infrastructure.Repositories;
+using DolApp.Infrastructure.Services;
 
 namespace DolApp.Infrastructure;
 
@@ -34,6 +35,7 @@ public static class DependencyInjection
 
         // ---- Repository'ler ----
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddSingleton<IDateTimeProvider, IstanbulDateTimeProvider>();  // saat sağlayıcı tek örnek: sistem saatini Europe/Istanbul'a çevirir.
 
         return services;
     }

@@ -2,6 +2,8 @@
 using DolApp.Application.UseCases.Clothes.AnalyzeClothing;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using DolApp.Application.UseCases.Clothes.ApproveClothing;
+using DolApp.Application.UseCases.Clothes.DeleteDraft;
 
 namespace DolApp.Api.Controllers
 {
@@ -41,6 +43,33 @@ namespace DolApp.Api.Controllers
             var analyzeClothingResponse = await _mediator.Send(analyzeClothingRequest, cancellationToken);
 
             return StatusCode(StatusCodes.Status201Created, analyzeClothingResponse);
+        }
+
+
+
+        /// Taslak parçayı onaylar (Kaydet). Gövde, etiket onay ekranındaki son değerlerdir.
+        [HttpPost("{clothingId}/approve")]
+        [ProducesResponseType<ApproveClothingResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<ApproveClothingResponse>> Approve(
+            long clothingId, ApproveClothingRequest request, CancellationToken cancellationToken)
+        {
+            request.ClothingId = clothingId;   // id adresten; gövdedeki alan yok sayılır ([JsonIgnore])
+            var approveClothingResponse = await _mediator.Send(request, cancellationToken);
+            return Ok(approveClothingResponse);
+        }
+
+        /// Taslak parçayı tamamen siler (Yeniden çek, kaydetmeden çıkış). Gövdesiz; başarıda 204.
+        [HttpDelete("{clothingId}/draft")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> DeleteDraft(long clothingId, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(new DeleteDraftRequest { ClothingId = clothingId }, cancellationToken);
+            return NoContent();
         }
     }
 }

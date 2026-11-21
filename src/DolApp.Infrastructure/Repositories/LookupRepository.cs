@@ -89,6 +89,24 @@ public class LookupRepository : ILookupRepository
     }
 
 
+    public Task<List<ClothingStatus>> GetClothingStatusesAsync(CancellationToken cancellationToken)
+    {
+        return GetFromCacheOrDatabaseAsync("lookups:clothing_statuses",
+            () => _dbContext.ClothingStatuses.AsNoTracking().OrderBy(clothingStatus => clothingStatus.Id).ToListAsync(cancellationToken));
+    }
+
+    public Task<List<LabelField>> GetLabelFieldsAsync(CancellationToken cancellationToken)
+    {
+        return GetFromCacheOrDatabaseAsync("lookups:label_fields",
+            () => _dbContext.LabelFields.AsNoTracking().OrderBy(labelField => labelField.Id).ToListAsync(cancellationToken));
+    }
+
+    public Task<List<LabelChangeStage>> GetLabelChangeStagesAsync(CancellationToken cancellationToken)
+    {
+        return GetFromCacheOrDatabaseAsync("lookups:label_change_stages",
+            () => _dbContext.LabelChangeStages.AsNoTracking().OrderBy(labelChangeStage => labelChangeStage.Id).ToListAsync(cancellationToken));
+    }
+
 
     /// Liste bellekte varsa oradan döner; yoksa veritabanından okur, belleğe koyar ve döner.
     private async Task<List<TEntity>> GetFromCacheOrDatabaseAsync<TEntity>(

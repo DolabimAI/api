@@ -30,6 +30,11 @@ public static class ErrorCodes
     public const string DateOutOfRange = "date_out_of_range";
     public const string TimePassed = "time_passed";
     public const string WeatherUnavailable = "weather_unavailable";
+    public const string UnsupportedFile = "unsupported_file";
+    public const string FileTooLarge = "file_too_large";
+    public const string ImageUnreadable = "image_unreadable";
+    public const string AnalysisFailed = "analysis_failed";
+    public const string NotADraft = "not_a_draft";
 }
 
 

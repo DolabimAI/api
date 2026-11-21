@@ -1,0 +1,75 @@
+﻿using DolApp.Api.Middleware;
+using DolApp.Application.UseCases.Clothes.AnalyzeClothing;
+using MediatR;
+using Microsoft.AspNetCore.Mvc;
+using DolApp.Application.UseCases.Clothes.ApproveClothing;
+using DolApp.Application.UseCases.Clothes.DeleteDraft;
+
+namespace DolApp.Api.Controllers
+{
+    /// Parça uçları (/api/clothes, C3). Hepsi token ister (Program.cs'teki RequireAuthorization).
+    /// Bu adımda yalnızca analyze; approve, taslak silme, liste, detay, düzenleme ve silme sonraki adımlarda eklenecek.
+
+    [ApiController]
+    [Route("api/clothes")]
+    public class ClothesController : ControllerBase
+    {
+        private readonly IMediator _mediator;
+
+        public ClothesController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        /// Fotoğrafı analiz eder ve taslak parça açar. Fotoğraf multipart/form-data olarak "image" alanında gelir
+        /// (parametre adı alan adını belirler; Python sözleşmesiyle aynı ad).
+        [HttpPost("analyze")]
+        [Consumes("multipart/form-data")]
+        [ProducesResponseType<AnalyzeClothingResponse>(StatusCodes.Status201Created)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status413PayloadTooLarge)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status502BadGateway)]
+        public async Task<ActionResult<AnalyzeClothingResponse>> Analyze(IFormFile? image, CancellationToken cancellationToken)
+        {
+            // Dosya yoksa akış da null kalır; validator 400 required_fields döner.
+            await using var imageStream = image?.OpenReadStream();
+
+            var analyzeClothingRequest = new AnalyzeClothingRequest
+            {
+                ImageStream = imageStream,
+                FileName = image?.FileName ?? string.Empty,
+                FileLength = image?.Length ?? 0,
+            };
+            var analyzeClothingResponse = await _mediator.Send(analyzeClothingRequest, cancellationToken);
+
+            return StatusCode(StatusCodes.Status201Created, analyzeClothingResponse);
+        }
+
+
+
+        /// Taslak parçayı onaylar (Kaydet). Gövde, etiket onay ekranındaki son değerlerdir.
+        [HttpPost("{clothingId}/approve")]
+        [ProducesResponseType<ApproveClothingResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
+        public async Task<ActionResult<ApproveClothingResponse>> Approve(
+            long clothingId, ApproveClothingRequest request, CancellationToken cancellationToken)
+        {
+            request.ClothingId = clothingId;   // id adresten; gövdedeki alan yok sayılır ([JsonIgnore])
+            var approveClothingResponse = await _mediator.Send(request, cancellationToken);
+            return Ok(approveClothingResponse);
+        }
+
+        /// Taslak parçayı tamamen siler (Yeniden çek, kaydetmeden çıkış). Gövdesiz; başarıda 204.
+        [HttpDelete("{clothingId}/draft")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status409Conflict)]
+        public async Task<IActionResult> DeleteDraft(long clothingId, CancellationToken cancellationToken)
+        {
+            await _mediator.Send(new DeleteDraftRequest { ClothingId = clothingId }, cancellationToken);
+            return NoContent();
+        }
+    }
+}

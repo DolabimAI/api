@@ -23,4 +23,13 @@ public class WardrobeRepository : IWardrobeRepository
                 wardrobe => wardrobe.Id == wardrobeSummary.WardrobeId && wardrobe.UserId == userId))
             .FirstOrDefaultAsync(cancellationToken);
     }
+
+
+    public async Task<long?> GetWardrobeIdByUserIdAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Wardrobes
+            .Where(wardrobe => wardrobe.UserId == userId)
+            .Select(wardrobe => (long?)wardrobe.Id)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
 }

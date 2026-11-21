@@ -123,4 +123,13 @@ app.UseAuthorization();    // uca girme izni var mı?: "girebilir misin?"
 // Bütün uçlar varsayılan olarak token ister. Açık olması gerekenlere [AllowAnonymous] yazılır.
 app.MapControllers().RequireAuthorization();
 
+// Açılışta Python /health kontrolü (D1'in kalan kriteri). Uygulama dinlemeye başladıktan sonra arka planda çalışır,
+// açılışı bekletmez; sonucu loga yazar (ayakta / ulaşılamadı / taklit modu). Hata fırlatmaz.
+app.Lifetime.ApplicationStarted.Register(() => _ = Task.Run(async () =>
+{
+    using var serviceScope = app.Services.CreateScope();
+    var clothingAnalyzer = serviceScope.ServiceProvider.GetRequiredService<IClothingAnalyzer>();
+    await clothingAnalyzer.CheckHealthAsync(app.Lifetime.ApplicationStopping);
+}));
+
 app.Run();

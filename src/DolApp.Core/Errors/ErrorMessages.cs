@@ -33,4 +33,9 @@ public static class ErrorMessages
     public const string DateOutOfRange = "Hava durumunu yalnızca bugün ve sonraki 6 gün için görebilirsin.";
     public const string TimePassed = "Bu vakit bugün için geçti. Lütfen daha sonraki bir vakit seç.";
     public const string WeatherUnavailable = "Hava durumu şu an alınamadı. Biraz sonra tekrar dener misin?";
+    public const string UnsupportedFile = "Bu dosya türü desteklenmiyor. Lütfen JPEG, PNG ya da WebP bir fotoğraf seç.";
+    public const string FileTooLarge = "Fotoğraf çok büyük. Lütfen 10 MB'tan küçük bir fotoğraf seç.";
+    public const string ImageUnreadable = "Fotoğraf okunamadı. Lütfen tekrar çeker misin?";
+    public const string AnalysisFailed = "Fotoğraf şu an işlenemedi. Biraz sonra tekrar dener misin?";
+    public const string NotADraft = "Bu parça zaten kaydedilmiş.";
 }

@@ -6,6 +6,7 @@ namespace DolApp.Application.Interfaces;
 
 public interface IWardrobeRepository
 {
-    /// Kullanıcının dolabındaki onaylı parça sayıları (wardrobe_summary görünümü).
-    Task<WardrobeSummary?> GetSummaryByUserIdAsync(Guid userId, CancellationToken cancellationToken);
+    Task<WardrobeSummary?> GetSummaryByUserIdAsync(Guid userId, CancellationToken cancellationToken);     /// Kullanıcının dolabındaki onaylı parça sayıları (wardrobe_summary görünümü).
+    Task<long?> GetWardrobeIdByUserIdAsync(Guid userId, CancellationToken cancellationToken);     /// Kullanıcının dolabının id'si (kayıtta her kullanıcıya bir dolap açılır). Bulunamazsa null.
+
 }

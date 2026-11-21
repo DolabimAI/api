@@ -89,6 +89,12 @@ public class LookupRepository : ILookupRepository
     }
 
 
+    public Task<List<ClothingStatus>> GetClothingStatusesAsync(CancellationToken cancellationToken)
+    {
+        return GetFromCacheOrDatabaseAsync("lookups:clothing_statuses",
+            () => _dbContext.ClothingStatuses.AsNoTracking().OrderBy(clothingStatus => clothingStatus.Id).ToListAsync(cancellationToken));
+    }
+
 
     /// Liste bellekte varsa oradan döner; yoksa veritabanından okur, belleğe koyar ve döner.
     private async Task<List<TEntity>> GetFromCacheOrDatabaseAsync<TEntity>(

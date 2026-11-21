@@ -1,11 +1,12 @@
 ﻿using DolApp.Application.Interfaces;
+using DolApp.Application.Options;
 using DolApp.Infrastructure.Clients;
 using DolApp.Infrastructure.Data;
+using DolApp.Infrastructure.Repositories;
+using DolApp.Infrastructure.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using DolApp.Infrastructure.Repositories;
-using DolApp.Infrastructure.Services;
 
 namespace DolApp.Infrastructure;
 
@@ -82,6 +83,12 @@ public static class DependencyInjection
             });
         }
 
+        // Model eşiği (0,40). Handler'lar kullandığı için sınıfı Application'da; değeri burada ayardan okunur.
+        services.AddSingleton(new ModelOptions
+        {
+            ConfidenceThreshold = OptionalDecimal(configuration, "Model:ConfidenceThreshold") ?? 0.40m,
+        });
+
         // Bellek önbelleği: liste tabloları (lookups) burada tutulur. Tek örnek, bütün isteklerle paylaşılır.
         services.AddMemoryCache();
 
@@ -91,6 +98,7 @@ public static class DependencyInjection
         services.AddScoped<ILocationRepository, LocationRepository>();
         services.AddScoped<ILookupRepository, LookupRepository>();
         services.AddScoped<IWardrobeRepository, WardrobeRepository>();
+        services.AddScoped<IClothingRepository, ClothingRepository>();
 
         return services;
     }

@@ -1,4 +1,5 @@
-﻿using DolApp.Application.UseCases.Clothes.AnalyzeClothing;
+﻿using DolApp.Api.Middleware;
+using DolApp.Application.UseCases.Clothes.AnalyzeClothing;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,6 +24,9 @@ namespace DolApp.Api.Controllers
         [HttpPost("analyze")]
         [Consumes("multipart/form-data")]
         [ProducesResponseType<AnalyzeClothingResponse>(StatusCodes.Status201Created)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status413PayloadTooLarge)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status502BadGateway)]
         public async Task<ActionResult<AnalyzeClothingResponse>> Analyze(IFormFile? image, CancellationToken cancellationToken)
         {
             // Dosya yoksa akış da null kalır; validator 400 required_fields döner.

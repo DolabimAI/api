@@ -22,6 +22,7 @@ namespace DolApp.Api.Controllers
         /// (parametre adı alan adını belirler; Python sözleşmesiyle aynı ad).
         [HttpPost("analyze")]
         [Consumes("multipart/form-data")]
+        [ProducesResponseType<AnalyzeClothingResponse>(StatusCodes.Status201Created)]
         public async Task<ActionResult<AnalyzeClothingResponse>> Analyze(IFormFile? image, CancellationToken cancellationToken)
         {
             // Dosya yoksa akış da null kalır; validator 400 required_fields döner.

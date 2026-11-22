@@ -1,6 +1,7 @@
 ﻿using DolApp.Api.Middleware;
 using DolApp.Application.UseCases.Clothes.AnalyzeClothing;
 using DolApp.Application.UseCases.Clothes.ApproveClothing;
+using DolApp.Application.UseCases.Clothes.DeleteClothing;
 using DolApp.Application.UseCases.Clothes.DeleteDraft;
 using DolApp.Application.UseCases.Clothes.GetClothes;
 using DolApp.Application.UseCases.Clothes.GetClothingById;
@@ -112,6 +113,19 @@ namespace DolApp.Api.Controllers
             request.ClothingId = clothingId;   // id adresten; gövdedeki alan yok sayılır ([JsonIgnore])
             var updateClothingResponse = await _mediator.Send(request, cancellationToken);
             return Ok(updateClothingResponse);
+        }
+
+
+        /// Parçayı siler (durum silindi). Satır ve görsel kalır; cevapta güncel dolap durumu döner.
+        /// Taslak için bu uç 404 verir; taslak DELETE /api/clothes/{clothingId}/draft ile silinir.
+        [HttpDelete("{clothingId}")]
+        [ProducesResponseType<DeleteClothingResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<DeleteClothingResponse>> DeleteClothing(long clothingId, CancellationToken cancellationToken)
+        {
+            var deleteClothingResponse = await _mediator.Send(new DeleteClothingRequest { ClothingId = clothingId }, cancellationToken);
+            return Ok(deleteClothingResponse);
         }
     }
 }

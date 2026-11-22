@@ -4,7 +4,7 @@ Bu belge, C# API ile Python servisinin (`ml` deposu) birbirine **ne gönderip ne
 Uygulama ↔ C# biçimleri ayrı bir belgede, "DolabımAI C# API Uçları"nda durur.
 Bu belgedeki örneklerin hepsi `examples/` klasöründe JSON dosyası olarak da var. Mock'larda ve testlerde doğrudan kullanılabilir.
 
-**Durum:** Onayda, 22 Kasım 2026. 14 Kasım taslağı içerik değişmeden onaya sunuldu. Beş kişinin onayından sonra sabitlenir (aşağıdaki "Onay" bölümü).
+**Durum:** Sabit, 22 Kasım 2026. Beş kişi onayladı (PR #8); 14 Kasım taslağı içerik değişmeden sabitlendi.
 Sabitlendikten sonra değişiklik yalnızca ilgili herkesin onayıyla yapılır.
 
 ## İçindekiler
@@ -369,10 +369,10 @@ Plana göre A3, bu belge api deposunda yazılı olduğunda ve beş kişi onaylad
 
 | Kişi | Sorumlu olduğu kısım | Onay |
 |---|---|---|
-| Zehra | Belgenin tamamı, C# tarafı | ☐ |
-| Onur | `/analyze`, `/health` | ☐ |
-| Ömer | `/recommend`, `/swap`, `history` | ☐ |
-| Bilge | Uygulamaya yansıyan sonuçlar (tek kart, aday yok, uygun parça yok, hata mesajları) | ☐ |
-| Sude | Aynı | ☐ |
+| Zehra | Belgenin tamamı, C# tarafı | ☑ 22 Kasım |
+| Onur | `/analyze`, `/health` | ☑ 22 Kasım |
+| Ömer | `/recommend`, `/swap`, `history` | ☑ 22 Kasım |
+| Bilge | Uygulamaya yansıyan sonuçlar (tek kart, aday yok, uygun parça yok, hata mesajları) | ☑ 22 Kasım |
+| Sude | Aynı | ☑ 22 Kasım |
 
 Onay, bu belgeyi ekleyen PR'da "Approve" ile verilir.

@@ -4,7 +4,7 @@ Bu belge, C# API ile Python servisinin (`ml` deposu) birbirine **ne gönderip ne
 Uygulama ↔ C# biçimleri ayrı bir belgede, "DolabımAI C# API Uçları"nda durur.
 Bu belgedeki örneklerin hepsi `examples/` klasöründe JSON dosyası olarak da var. Mock'larda ve testlerde doğrudan kullanılabilir.
 
-**Durum:** Taslak, 14 Kasım 2026. Beş kişinin onayından sonra sabitlenir (aşağıdaki "Onay" bölümü).
+**Durum:** Onayda, 22 Kasım 2026. 14 Kasım taslağı içerik değişmeden onaya sunuldu. Beş kişinin onayından sonra sabitlenir (aşağıdaki "Onay" bölümü).
 Sabitlendikten sonra değişiklik yalnızca ilgili herkesin onayıyla yapılır.
 
 ## İçindekiler

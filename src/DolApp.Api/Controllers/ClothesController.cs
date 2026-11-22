@@ -3,6 +3,7 @@ using DolApp.Application.UseCases.Clothes.AnalyzeClothing;
 using DolApp.Application.UseCases.Clothes.ApproveClothing;
 using DolApp.Application.UseCases.Clothes.DeleteDraft;
 using DolApp.Application.UseCases.Clothes.GetClothes;
+using DolApp.Application.UseCases.Clothes.GetClothingById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -83,6 +84,18 @@ namespace DolApp.Api.Controllers
         {
             var getClothesResponse = await _mediator.Send(new GetClothesRequest { SubtypeId = subtypeId }, cancellationToken);
             return Ok(getClothesResponse);
+        }
+
+
+        /// Parça detayı. Yalnızca onaylı parça; taslak, silinmiş ya da başkasının parçası 404.
+        [HttpGet("{clothingId}")]
+        [ProducesResponseType<GetClothingByIdResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<GetClothingByIdResponse>> GetClothingById(long clothingId, CancellationToken cancellationToken)
+        {
+            var getClothingByIdResponse = await _mediator.Send(new GetClothingByIdRequest { ClothingId = clothingId }, cancellationToken);
+            return Ok(getClothingByIdResponse);
         }
     }
 }

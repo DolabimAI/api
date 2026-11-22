@@ -1,14 +1,19 @@
 ﻿using DolApp.Api.Middleware;
 using DolApp.Application.UseCases.Clothes.AnalyzeClothing;
+using DolApp.Application.UseCases.Clothes.ApproveClothing;
+using DolApp.Application.UseCases.Clothes.DeleteClothing;
+using DolApp.Application.UseCases.Clothes.DeleteDraft;
+using DolApp.Application.UseCases.Clothes.GetClothes;
+using DolApp.Application.UseCases.Clothes.GetClothingById;
+using DolApp.Application.UseCases.Clothes.UpdateClothing;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using DolApp.Application.UseCases.Clothes.ApproveClothing;
-using DolApp.Application.UseCases.Clothes.DeleteDraft;
 
 namespace DolApp.Api.Controllers
 {
     /// Parça uçları (/api/clothes, C3). Hepsi token ister (Program.cs'teki RequireAuthorization).
-    /// Bu adımda yalnızca analyze; approve, taslak silme, liste, detay, düzenleme ve silme sonraki adımlarda eklenecek.
+    /// Yedi uç: analyze, approve, taslak silme (S3); liste, detay, düzenleme, silme (S4, S5).
+    /// Başka kullanıcının, taslak ya da silinmiş parçası "yok" sayılır ve 404 döner (T-17).
 
     [ApiController]
     [Route("api/clothes")]
@@ -70,6 +75,58 @@ namespace DolApp.Api.Controllers
         {
             await _mediator.Send(new DeleteDraftRequest { ClothingId = clothingId }, cancellationToken);
             return NoContent();
+        }
+
+
+        /// Dolabım listesi: onaylı parçalar, alt türe göre gruplu ve Türkçe alfabetik. ?subtypeId=5 ile tek türe daralır.
+        [HttpGet]
+        [ProducesResponseType<GetClothesResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<GetClothesResponse>> GetClothes(
+            [FromQuery] long? subtypeId, CancellationToken cancellationToken)
+        {
+            var getClothesResponse = await _mediator.Send(new GetClothesRequest { SubtypeId = subtypeId }, cancellationToken);
+            return Ok(getClothesResponse);
+        }
+
+
+        /// Parça detayı. Yalnızca onaylı parça; taslak, silinmiş ya da başkasının parçası 404.
+        [HttpGet("{clothingId}")]
+        [ProducesResponseType<GetClothingByIdResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<GetClothingByIdResponse>> GetClothingById(long clothingId, CancellationToken cancellationToken)
+        {
+            var getClothingByIdResponse = await _mediator.Send(new GetClothingByIdRequest { ClothingId = clothingId }, cancellationToken);
+            return Ok(getClothingByIdResponse);
+        }
+
+
+
+        /// Etiket düzenleme. Yalnızca gönderilen alanlar değişir; değişen her alan label_changes'a "sonradan" yazılır.
+        [HttpPatch("{clothingId}")]
+        [ProducesResponseType<UpdateClothingResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UpdateClothingResponse>> UpdateClothing(
+            long clothingId, UpdateClothingRequest request, CancellationToken cancellationToken)
+        {
+            request.ClothingId = clothingId;   // id adresten; gövdedeki alan yok sayılır ([JsonIgnore])
+            var updateClothingResponse = await _mediator.Send(request, cancellationToken);
+            return Ok(updateClothingResponse);
+        }
+
+
+        /// Parçayı siler (durum silindi). Satır ve görsel kalır; cevapta güncel dolap durumu döner.
+        /// Taslak için bu uç 404 verir; taslak DELETE /api/clothes/{clothingId}/draft ile silinir.
+        [HttpDelete("{clothingId}")]
+        [ProducesResponseType<DeleteClothingResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<DeleteClothingResponse>> DeleteClothing(long clothingId, CancellationToken cancellationToken)
+        {
+            var deleteClothingResponse = await _mediator.Send(new DeleteClothingRequest { ClothingId = clothingId }, cancellationToken);
+            return Ok(deleteClothingResponse);
         }
     }
 }

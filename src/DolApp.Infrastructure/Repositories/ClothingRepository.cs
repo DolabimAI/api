@@ -46,6 +46,15 @@ public class ClothingRepository : IClothingRepository
             .FirstOrDefaultAsync(clothe => clothe.Id == clothingId && clothe.WardrobeId == wardrobeId, cancellationToken);
     }
 
+    public async Task<List<Clothe>> GetApprovedAsync(long wardrobeId, long approvedStatusId, CancellationToken cancellationToken)
+    {
+        // Yalnızca okunacağı için takipsiz; dolap koşulu sahipliği sağlar.
+        return await _dbContext.Clothes
+            .AsNoTracking()
+            .Where(clothe => clothe.WardrobeId == wardrobeId && clothe.StatusId == approvedStatusId)
+            .ToListAsync(cancellationToken);
+    }
+
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         await _dbContext.SaveChangesAsync(cancellationToken);

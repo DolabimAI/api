@@ -16,8 +16,7 @@ namespace DolApp.Application.Interfaces
        /// Kullanıcının dolabındaki bir parça, modelin tahminiyle birlikte. Takipli döner (değiştirilip kaydedilebilir).
        /// Parça yoksa ya da başka bir kullanıcının dolabındaysa null; uç 404 döner (sahiplik kuralı, T-17).
         Task<Clothe?> GetForUpdateAsync(long clothingId, long wardrobeId, CancellationToken cancellationToken);
-
-        /// Takipteki değişiklikleri (parça ve ona eklenen label_changes satırları) tek SaveChanges ile yazar = tek işlem.
-        Task SaveChangesAsync(CancellationToken cancellationToken);
+        Task<List<Clothe>> GetApprovedAsync(long wardrobeId, long approvedStatusId, CancellationToken cancellationToken);         /// Dolaptaki onaylı parçalar (Dolabım listesi). Takipsiz döner; yalnızca okunur, değiştirilmez.
+        Task SaveChangesAsync(CancellationToken cancellationToken);        /// Takipteki değişiklikleri (parça ve ona eklenen label_changes satırları) tek SaveChanges ile yazar = tek işlem.
     }
 }

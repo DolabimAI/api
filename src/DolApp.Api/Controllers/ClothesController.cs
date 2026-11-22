@@ -12,7 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace DolApp.Api.Controllers
 {
     /// Parça uçları (/api/clothes, C3). Hepsi token ister (Program.cs'teki RequireAuthorization).
-    /// Bu adımda yalnızca analyze; approve, taslak silme, liste, detay, düzenleme ve silme sonraki adımlarda eklenecek.
+    /// Yedi uç: analyze, approve, taslak silme (S3); liste, detay, düzenleme, silme (S4, S5).
+    /// Başka kullanıcının, taslak ya da silinmiş parçası "yok" sayılır ve 404 döner (T-17).
 
     [ApiController]
     [Route("api/clothes")]

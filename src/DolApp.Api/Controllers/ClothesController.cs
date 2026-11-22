@@ -4,6 +4,7 @@ using DolApp.Application.UseCases.Clothes.ApproveClothing;
 using DolApp.Application.UseCases.Clothes.DeleteDraft;
 using DolApp.Application.UseCases.Clothes.GetClothes;
 using DolApp.Application.UseCases.Clothes.GetClothingById;
+using DolApp.Application.UseCases.Clothes.UpdateClothing;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -96,6 +97,21 @@ namespace DolApp.Api.Controllers
         {
             var getClothingByIdResponse = await _mediator.Send(new GetClothingByIdRequest { ClothingId = clothingId }, cancellationToken);
             return Ok(getClothingByIdResponse);
+        }
+
+
+
+        /// Etiket düzenleme. Yalnızca gönderilen alanlar değişir; değişen her alan label_changes'a "sonradan" yazılır.
+        [HttpPatch("{clothingId}")]
+        [ProducesResponseType<UpdateClothingResponse>(StatusCodes.Status200OK)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType<ErrorResponse>(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<UpdateClothingResponse>> UpdateClothing(
+            long clothingId, UpdateClothingRequest request, CancellationToken cancellationToken)
+        {
+            request.ClothingId = clothingId;   // id adresten; gövdedeki alan yok sayılır ([JsonIgnore])
+            var updateClothingResponse = await _mediator.Send(request, cancellationToken);
+            return Ok(updateClothingResponse);
         }
     }
 }

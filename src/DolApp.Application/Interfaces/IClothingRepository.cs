@@ -18,5 +18,9 @@ namespace DolApp.Application.Interfaces
         Task<Clothe?> GetForUpdateAsync(long clothingId, long wardrobeId, CancellationToken cancellationToken);
         Task<List<Clothe>> GetApprovedAsync(long wardrobeId, long approvedStatusId, CancellationToken cancellationToken);         /// Dolaptaki onaylı parçalar (Dolabım listesi). Takipsiz döner; yalnızca okunur, değiştirilmez.
         Task SaveChangesAsync(CancellationToken cancellationToken);        /// Takipteki değişiklikleri (parça ve ona eklenen label_changes satırları) tek SaveChanges ile yazar = tek işlem.
+
+         /// Verilen id'lerdeki parçalar, durumu ne olursa olsun (onaylı, silinmiş), yalnızca bu dolaptan. Takipsiz.
+        /// C5: geçmiş kararlardaki parçalar güncel etiketleriyle Python'a gider; sonradan silinmiş olanlar da dahil.
+        Task<List<Clothe>> GetByIdsAsync(long wardrobeId, List<long> clothingIds, CancellationToken cancellationToken);
     }
 }

@@ -13,5 +13,9 @@
 
         /// Taklit cevaptaki güven. 0,40'ın altına çekilirse "tür boş" durumu denenir (T-10'un C# kısmı).
         public decimal FakeConfidence { get; init; } = 0.873m;
+
+        /// true ise /recommend için Python'a gidilmez; FakeOutfitRecommender kullanıcının kendi parçalarından kombin kurar.
+        /// UseFake'ten bağımsızdır: analiz taklit, öneri gerçek (ya da tersi) denenebilir.
+        public bool UseFakeRecommender { get; init; }
     }
 }

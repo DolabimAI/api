@@ -7,6 +7,7 @@ using DolApp.Core.Constants;
 using DolApp.Core.Entities;
 using DolApp.Core.Errors;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace DolApp.Application.UseCases.Comparisons.CreateSession;
 
@@ -35,6 +36,7 @@ public class CreateSessionHandler : IRequestHandler<CreateSessionRequest, Create
     private readonly IOutfitRecommender _outfitRecommender;
     private readonly IImageStorage _imageStorage;
     private readonly IRandomProvider _randomProvider;
+    private readonly ILogger<CreateSessionHandler> _logger;
 
     public CreateSessionHandler(
         ICurrentUser currentUser,
@@ -45,7 +47,8 @@ public class CreateSessionHandler : IRequestHandler<CreateSessionRequest, Create
         ILookupRepository lookupRepository,
         IOutfitRecommender outfitRecommender,
         IImageStorage imageStorage,
-        IRandomProvider randomProvider)
+        IRandomProvider randomProvider,
+        ILogger<CreateSessionHandler> logger)
     {
         _currentUser = currentUser;
         _mediator = mediator;
@@ -56,6 +59,7 @@ public class CreateSessionHandler : IRequestHandler<CreateSessionRequest, Create
         _outfitRecommender = outfitRecommender;
         _imageStorage = imageStorage;
         _randomProvider = randomProvider;
+        _logger = logger;
     }
 
     public async Task<CreateSessionResponse> Handle(CreateSessionRequest request, CancellationToken cancellationToken)
@@ -126,6 +130,18 @@ public class CreateSessionHandler : IRequestHandler<CreateSessionRequest, Create
         };
         var recommendationRequest = RecommendationRequestBuilder.Build(
             userId, context, approvedClothes, learningHistory, historyClothes, lookups);
+
+
+        // Builder eksik etiketli parçayı ve parçası bulunamayan geçmiş kararı göndermez. Normalde olmaz;
+        // olursa araştırma verisi eksik gitmiş demektir, bu yüzden loga yazılır.
+        if (recommendationRequest.Wardrobe.Count < approvedClothes.Count
+            || recommendationRequest.History.Count < learningHistory.Count)
+        {
+            _logger.LogWarning(
+                "Kombin isteği eksik gönderildi (kullanıcı {UserId}): dolap {SentItems}/{ApprovedItems} parça, geçmiş {SentHistory}/{LearningHistory} karar.",
+                userId, recommendationRequest.Wardrobe.Count, approvedClothes.Count,
+                recommendationRequest.History.Count, learningHistory.Count);
+        }
 
         // 5) Python
         var recommendation = await _outfitRecommender.RecommendAsync(recommendationRequest, cancellationToken);

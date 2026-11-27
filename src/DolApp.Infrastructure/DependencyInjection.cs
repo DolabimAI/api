@@ -116,6 +116,7 @@ public static class DependencyInjection
         services.AddScoped<ILookupRepository, LookupRepository>();
         services.AddScoped<IWardrobeRepository, WardrobeRepository>();
         services.AddScoped<IClothingRepository, ClothingRepository>();
+        services.AddScoped<IComparisonRepository, ComparisonRepository>();
 
         return services;
     }

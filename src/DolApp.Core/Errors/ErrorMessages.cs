@@ -42,4 +42,6 @@ public static class ErrorMessages
 
     // Karşılaştırma (C5, C6)
     public const string RecommendationFailed = "Şu an kombin önerisi hazırlanamadı. Biraz sonra tekrar dener misin?";
+    public const string WardrobeNotReady = "Kombin önerebilmemiz için dolabında henüz yeterli parça yok.";
+    public const string NoCandidates = "Bu koşullara uygun kombin bulamadık.";
 }

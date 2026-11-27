@@ -39,6 +39,8 @@ public static class ErrorCodes
 
     // Karşılaştırma (C5, C6)
     public const string RecommendationFailed = "recommendation_failed";
+    public const string WardrobeNotReady = "wardrobe_not_ready";
+    public const string NoCandidates = "no_candidates";
 }
 
 

@@ -117,6 +117,7 @@ public static class DependencyInjection
         services.AddScoped<IWardrobeRepository, WardrobeRepository>();
         services.AddScoped<IClothingRepository, ClothingRepository>();
         services.AddScoped<IComparisonRepository, ComparisonRepository>();
+        services.AddSingleton<IRandomProvider, SystemRandomProvider>();  // rastgele seçimler (kural kartı solda mı sağda mı) tek örnek.
 
         return services;
     }

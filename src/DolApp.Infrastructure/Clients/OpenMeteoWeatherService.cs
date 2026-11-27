@@ -7,6 +7,7 @@ using DolApp.Core.Entities;
 using DolApp.Core.Errors;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using DolApp.Application.Models;
 
 namespace DolApp.Infrastructure.Clients;
 

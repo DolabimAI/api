@@ -1,4 +1,6 @@
+using DolApp.Application.Models;
 namespace DolApp.Application.Interfaces;
+
 
 /// Giriş hesabı işlemleri. Use case'ler hesabın nerede tutulduğunu (Supabase) bilmez;
 /// implementasyon Infrastructure'dadır (SupabaseAuthClient).
@@ -14,6 +16,3 @@ public interface IAuthService
     /// E-posta ve şifreyi kontrol eder; doğruysa token döner. 
     Task<AuthSession> SignInAsync(string email, string password, CancellationToken cancellationToken);
 }
-
-/// Başarılı girişin sonucu: kullanıcı id'si, token ve token'ın bitiş zamanı.
-public record AuthSession(Guid UserId, string AccessToken, DateTimeOffset ExpiresAt);

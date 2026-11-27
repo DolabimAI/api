@@ -1,4 +1,5 @@
-﻿using DolApp.Application.Interfaces;
+﻿using DolApp.Application.Models;
+using DolApp.Application.Interfaces;
 using DolApp.Application.Options;
 using DolApp.Core.Constants;
 using DolApp.Core.Entities;

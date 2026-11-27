@@ -6,6 +6,7 @@ using System.Text.Json.Serialization;
 using DolApp.Application.Interfaces;
 using DolApp.Core.Errors;
 using Microsoft.Extensions.Logging;
+using DolApp.Application.Models;
 
 namespace DolApp.Infrastructure.Clients;
 

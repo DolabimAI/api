@@ -68,6 +68,7 @@ public static class DependencyInjection
             TimeoutSeconds = OptionalInt(configuration, "Python:TimeoutSeconds") ?? 30,
             UseFake = OptionalBool(configuration, "Python:UseFake") ?? false,
             FakeConfidence = OptionalDecimal(configuration, "Python:FakeConfidence") ?? 0.873m,
+            UseFakeRecommender = OptionalBool(configuration, "Python:UseFakeRecommender") ?? false,
         };
         services.AddSingleton(pythonOptions);
         if (pythonOptions.UseFake)
@@ -77,6 +78,22 @@ public static class DependencyInjection
         else
         {
             services.AddHttpClient<IClothingAnalyzer, PythonClothingAnalyzer>(httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(pythonOptions.BaseUrl + "/");
+                httpClient.Timeout = TimeSpan.FromSeconds(pythonOptions.TimeoutSeconds);
+            });
+        }
+
+
+        // Python /recommend (C5, C6). UseFakeRecommender = true ise Python'a gidilmez, taklit kullanılır (yalnızca geliştirme).
+        // UseFake'ten bağımsızdır: analiz taklit, öneri gerçek (ya da tersi) denenebilir. Adres ve süre /analyze ile aynı.
+        if (pythonOptions.UseFakeRecommender)
+        {
+            services.AddScoped<IOutfitRecommender, FakeOutfitRecommender>();
+        }
+        else
+        {
+            services.AddHttpClient<IOutfitRecommender, PythonOutfitRecommender>(httpClient =>
             {
                 httpClient.BaseAddress = new Uri(pythonOptions.BaseUrl + "/");
                 httpClient.Timeout = TimeSpan.FromSeconds(pythonOptions.TimeoutSeconds);
@@ -99,6 +116,8 @@ public static class DependencyInjection
         services.AddScoped<ILookupRepository, LookupRepository>();
         services.AddScoped<IWardrobeRepository, WardrobeRepository>();
         services.AddScoped<IClothingRepository, ClothingRepository>();
+        services.AddScoped<IComparisonRepository, ComparisonRepository>();
+        services.AddSingleton<IRandomProvider, SystemRandomProvider>();  // rastgele seçimler (kural kartı solda mı sağda mı) tek örnek.
 
         return services;
     }

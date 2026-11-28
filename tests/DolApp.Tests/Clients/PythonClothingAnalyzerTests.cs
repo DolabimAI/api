@@ -1,9 +1,9 @@
-﻿using System.Net;
-using DolApp.Application.Interfaces;
+﻿using DolApp.Application.Models;
 using DolApp.Core.Errors;
 using DolApp.Infrastructure.Clients;
 using DolApp.Tests.Fakes;
 using Microsoft.Extensions.Logging.Abstractions;
+using System.Net;
 
 namespace DolApp.Tests.Clients;
 

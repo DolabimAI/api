@@ -1,4 +1,5 @@
 using DolApp.Application.Interfaces;
+using DolApp.Application.Models;
 
 namespace DolApp.Tests.Fakes;
 

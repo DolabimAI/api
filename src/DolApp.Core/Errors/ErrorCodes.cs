@@ -35,6 +35,12 @@ public static class ErrorCodes
     public const string ImageUnreadable = "image_unreadable";
     public const string AnalysisFailed = "analysis_failed";
     public const string NotADraft = "not_a_draft";
+
+
+    // Karşılaştırma (C5, C6)
+    public const string RecommendationFailed = "recommendation_failed";
+    public const string WardrobeNotReady = "wardrobe_not_ready";
+    public const string NoCandidates = "no_candidates";
 }
 
 

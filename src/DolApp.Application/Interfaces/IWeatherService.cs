@@ -1,5 +1,4 @@
-using DolApp.Core.Entities;
-
+using DolApp.Application.Models;
 namespace DolApp.Application.Interfaces;
 
 /// Hava özeti: GET /api/weather (C4) ve kombin önerisi (C5) aynı hesabı kullanır.
@@ -11,13 +10,4 @@ public interface IWeatherService
     Task<WeatherSummary> GetWeatherSummaryAsync(
         decimal latitude, decimal longitude, DateOnly date, int startHour, int endHour,
         CancellationToken cancellationToken);
-}
-
-/// Hava özeti. Condition, weather_conditions tablosundaki satırın kendisidir:
-/// C5 ıslak/güneşli bilgisini (IsWet, IsSunny) ve id'sini buradan alır.
-
-public class WeatherSummary
-{
-    public decimal FeelsLikeTemperature { get; set; }
-    public WeatherCondition Condition { get; set; } = null!;
 }

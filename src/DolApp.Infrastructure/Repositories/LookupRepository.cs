@@ -107,6 +107,24 @@ public class LookupRepository : ILookupRepository
             () => _dbContext.LabelChangeStages.AsNoTracking().OrderBy(labelChangeStage => labelChangeStage.Id).ToListAsync(cancellationToken));
     }
 
+    public Task<List<Method>> GetMethodsAsync(CancellationToken cancellationToken)
+    {
+        return GetFromCacheOrDatabaseAsync("lookups:methods",
+            () => _dbContext.Methods.AsNoTracking().OrderBy(method => method.Id).ToListAsync(cancellationToken));
+    }
+
+    public Task<List<LearnedPickMode>> GetLearnedPickModesAsync(CancellationToken cancellationToken)
+    {
+        return GetFromCacheOrDatabaseAsync("lookups:learned_pick_modes",
+            () => _dbContext.LearnedPickModes.AsNoTracking().OrderBy(learnedPickMode => learnedPickMode.Id).ToListAsync(cancellationToken));
+    }
+
+    public Task<List<ResultStatus>> GetResultStatusesAsync(CancellationToken cancellationToken)
+    {
+        return GetFromCacheOrDatabaseAsync("lookups:result_statuses",
+            () => _dbContext.ResultStatuses.AsNoTracking().OrderBy(resultStatus => resultStatus.Id).ToListAsync(cancellationToken));
+    }
+
 
     /// Liste bellekte varsa oradan döner; yoksa veritabanından okur, belleğe koyar ve döner.
     private async Task<List<TEntity>> GetFromCacheOrDatabaseAsync<TEntity>(

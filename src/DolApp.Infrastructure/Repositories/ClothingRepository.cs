@@ -55,6 +55,14 @@ public class ClothingRepository : IClothingRepository
             .ToListAsync(cancellationToken);
     }
 
+    public async Task<List<Clothe>> GetByIdsAsync(long wardrobeId, List<long> clothingIds, CancellationToken cancellationToken)
+    {
+        // Yalnızca okunacağı için takipsiz; dolap koşulu sahipliği sağlar. Durum süzülmez: silinmiş parça da gelir.
+        return await _dbContext.Clothes
+            .AsNoTracking()
+            .Where(clothe => clothe.WardrobeId == wardrobeId && clothingIds.Contains(clothe.Id))
+            .ToListAsync(cancellationToken);
+    }
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
         await _dbContext.SaveChangesAsync(cancellationToken);

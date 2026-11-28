@@ -38,4 +38,10 @@ public static class ErrorMessages
     public const string ImageUnreadable = "Fotoğraf okunamadı. Lütfen tekrar çeker misin?";
     public const string AnalysisFailed = "Fotoğraf şu an işlenemedi. Biraz sonra tekrar dener misin?";
     public const string NotADraft = "Bu parça zaten kaydedilmiş.";
+
+
+    // Karşılaştırma (C5, C6)
+    public const string RecommendationFailed = "Şu an kombin önerisi hazırlanamadı. Biraz sonra tekrar dener misin?";
+    public const string WardrobeNotReady = "Kombin önerebilmemiz için dolabında henüz yeterli parça yok.";
+    public const string NoCandidates = "Bu koşullara uygun kombin bulamadık.";
 }

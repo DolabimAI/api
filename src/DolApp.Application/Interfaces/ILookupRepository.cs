@@ -20,6 +20,9 @@ public interface ILookupRepository
     Task<List<ClothingStatus>> GetClothingStatusesAsync(CancellationToken cancellationToken);     /// Parça durumları: taslak, onayli, silindi (C3).
     Task<List<LabelField>> GetLabelFieldsAsync(CancellationToken cancellationToken);                 /// Etiket düzeltme logunun alanları: alt_tur, ana_renk, ton, desen, tarz, kalinlik, mevsim (C3).
     Task<List<LabelChangeStage>> GetLabelChangeStagesAsync(CancellationToken cancellationToken);     /// Düzeltmenin yapıldığı ekran: onay, sonradan (C3).
+    Task<List<Method>> GetMethodsAsync(CancellationToken cancellationToken); /// Kombin yöntemleri: kural, ogrenen, ortak_kural (C5–C8).
+    Task<List<LearnedPickMode>> GetLearnedPickModesAsync(CancellationToken cancellationToken); /// Öğrenen kartın seçilme biçimi: model, kesif, soguk_baslangic (C5).
+    Task<List<ResultStatus>> GetResultStatusesAsync(CancellationToken cancellationToken); /// Karşılaştırma sonuçları ve iki harfli kısa kodları (C5–C7).
 }
 
 
